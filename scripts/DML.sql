@@ -56,12 +56,11 @@ VALUES
 CREATE OR REPLACE FUNCTION version_trigger_function()
 RETURNS TRIGGER AS $$
 BEGIN
-    -- Обновляем поле valid_to у всех записей с таким же name и birth_date
     UPDATE Doctors
     SET valid_to = CURRENT_DATE
     WHERE name = NEW.name
       AND birth_date = NEW.birth_date
-      AND valid_to = '9999-12-31';  -- Только обновляем, если valid_to имеет значение по умолчанию
+      AND valid_to = '9999-12-31';
 
     RETURN NEW;
 END;
