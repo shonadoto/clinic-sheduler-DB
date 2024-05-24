@@ -18,6 +18,7 @@ CREATE TABLE IF NOT EXISTS Services
   price INT
 )
 
+
 CREATE TABLE IF NOT EXISTS Doctors
 (
   doctor_id SERIAL PRIMARY KEY,
@@ -26,8 +27,15 @@ CREATE TABLE IF NOT EXISTS Doctors
   gender VARCHAR(5),
   phone_number VARCHAR(20),
   email VARCHAR(100),
-  price_for_hour INT
+  price_for_hour INT,
+  valid_from TIMESTAMP,
+  valid_to TIMESTAMP
 )
+
+ALTER TABLE Doctors ALTER COLUMN valid_from SET DEFAULT CURRENT_DATE;
+
+ALTER TABLE Doctors ALTER COLUMN valid_to SET DEFAULT '9999-12-31';
+
 
 CREATE TABLE IF NOT EXISTS Competence
 (

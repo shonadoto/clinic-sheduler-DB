@@ -53,6 +53,31 @@ VALUES
   ('Федоров Владимир', '1982-08-14', 'М', '4445556663', 'fedorov@example.com', 2100),
   ('Сергеев Иван', '1994-03-19', 'М', '8889990005', 'sergeev@example.com', 2300);
 
+CREATE OR REPLACE FUNCTION version_trigger_function()
+RETURNS TRIGGER AS $$
+BEGIN
+    -- Обновляем поле valid_to у всех записей с таким же name и birth_date
+    UPDATE Doctors
+    SET valid_to = CURRENT_DATE
+    WHERE name = NEW.name
+      AND birth_date = NEW.birth_date
+      AND valid_to = '9999-12-31';  -- Только обновляем, если valid_to имеет значение по умолчанию
+
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE OR REPLACE TRIGGER versioning_trigger
+BEFORE INSERT ON Doctors
+FOR EACH ROW 
+EXECUTE FUNCTION version_trigger_function();
+
+INSERT INTO Doctors
+  (name, birth_date, gender, phone_number, email, price_for_hour)
+VALUES
+  ('Петрова Елена', '1978-06-18', 'Ж', '777888990', 'petrova@example.com', 500000)
+ 
+
 INSERT INTO Services
   (name, price)
 VALUES
